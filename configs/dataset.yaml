@@ -1,0 +1,45 @@
+# Dataset Configuration for egg-segmentation-tracking
+# Roboflow Dataset V1: https://universe.roboflow.com/fire-bf7qe/egg-vzhtr/dataset/1
+
+dataset:
+  name: "egg-v1"
+  license: "CC BY 4.0"
+  archive_path: "../egg.v1i.folder.zip"  # Path to immutable raw archive
+  raw_dir: "data/raw/egg-v1"             # Extracted directory path if extracted
+  expected_resolution: [640, 640]
+  expected_extension: ".jpg"
+  expected_total_images: 110
+  
+  # Ground truth breakdown from Roboflow export
+  expected_subsets:
+    "train/egg": 75
+    "train/Unlabeled": 2
+    "valid/egg": 22
+    "test/egg": 11
+
+manifests:
+  output_dir: "data/manifests"
+  audit_file: "data/manifests/dataset_audit.csv"
+  duplicates_file: "data/manifests/duplicate_candidates.csv"
+  split_file: "data/manifests/split.csv"
+  summary_json: "data/manifests/dataset_summary.json"
+
+split:
+  random_seed: 42
+  target_dev_ratio: 0.80
+  target_eval_ratio: 0.20
+  target_dev_count: 88
+  target_eval_count: 22
+  prevent_leakage: true                  # Enforce duplicate groups stay on one side
+
+duplicate_detection:
+  hash_types: ["sha256", "dhash", "ahash", "phash"]
+  primary_perceptual_hash: "dhash"
+  hash_size: 8                           # 8x8 gives 64-bit hash
+  hamming_distance_threshold: 6          # Distances <= 6 flagged as suspected near-duplicates
+  save_visual_comparisons: true
+  comparison_output_dir: "outputs/dataset_audit/duplicate_pairs"
+
+outputs:
+  audit_dir: "outputs/dataset_audit"
+  contact_sheet_path: "outputs/dataset_audit/dataset_contact_sheet.jpg"

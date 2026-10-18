@@ -1,0 +1,34 @@
+# Evaluation and Comparative Analysis Configuration (Task 3)
+
+target_split: "development"            # "development" for parameter tuning; "evaluation" ONLY for final benchmark
+
+inputs:
+  split_manifest: "data/manifests/split.csv"
+  reference_masks_dir: "outputs/sam/binary_masks"
+  predicted_masks_dir: "outputs/classical/masks"
+
+metrics:
+  supported:
+    - "iou"                            # Jaccard index
+    - "dice"                           # F1-score / Sorensen-Dice coefficient
+    - "precision"                      # True Positives / (True Positives + False Positives)
+    - "recall"                         # True Positives / (True Positives + False Negatives)
+
+empty_mask_policy:
+  both_empty_score: 1.0                # When both ground truth and prediction are blank
+  pred_empty_ref_nonempty: 0.0         # Total miss
+  pred_nonempty_ref_empty: 0.0         # False alarm on clean background
+  zero_division_fallback: 0.0
+
+analysis:
+  generate_error_maps: true            # TP (green), FP (red), FN (blue)
+  top_n_failure_cases: 10
+  save_comparison_plots: true
+  score_distribution_bins: 20
+
+outputs:
+  results_csv: "outputs/evaluation/evaluation_metrics.csv"
+  summary_json: "outputs/evaluation/evaluation_summary.json"
+  figures_dir: "outputs/figures"
+  failure_gallery_dir: "outputs/evaluation/failure_cases"
+  report_summary_md: "report/evaluation_summary.md"

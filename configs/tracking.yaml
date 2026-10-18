@@ -1,0 +1,33 @@
+# Video Egg Segmentation and Tracking Configuration (Task 4)
+
+video:
+  assigned_youtube_url: "https://www.youtube.com/watch?v=Y4JyV94y2_A"
+  local_video_path: "data/raw/video/egg_video.mp4"
+  # Placeholder for manually uploaded final annotated video on Google Drive:
+  google_drive_public_url: "https://drive.google.com/file/d/REPLACE_WITH_YOUR_PUBLIC_DRIVE_LINK/view?usp=sharing"
+
+detection:
+  detector_type: "classical"           # Uses tuned eggcv classical segmenter
+  config_path: "configs/segmentation.yaml"
+  confidence_threshold: 0.5
+
+tracker:
+  association_method: "centroid_distance"  # "centroid_distance", "iou", or "hybrid"
+  max_distance_pixels: 75.0            # Max centroid shift between frames for matching
+  min_iou_overlap: 0.20                # Min mask IoU for IoU-based matching
+  max_consecutive_lost_frames: 20      # Coasting threshold before terminating a lost track
+  min_hits_to_confirm: 3               # Minimum detections before assigning a permanent ID
+
+visualization:
+  draw_contours: true
+  draw_bounding_boxes: true
+  draw_centroid_traces: true
+  trace_length_frames: 30
+  draw_track_ids: true
+  draw_frame_counter: true
+  codec: "mp4v"
+
+outputs:
+  output_annotated_video: "outputs/tracking/annotated_egg_video.mp4"
+  trajectory_log_csv: "outputs/tracking/tracks_log.csv"
+  tracking_metrics_json: "outputs/tracking/tracking_metrics.json"

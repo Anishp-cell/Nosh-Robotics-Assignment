@@ -1,0 +1,27 @@
+# Meta Segment Anything Model (SAM) Configuration for Task 1
+model:
+  type: "vit_b"
+  checkpoint_path: "checkpoints/sam_vit_b_01ec64.pth"
+  checkpoint_url: "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth"
+  device: "cuda"                       # Will automatically fallback to "cpu" if unavailable
+
+generator:
+  points_per_side: 32
+  pred_iou_thresh: 0.88
+  stability_score_thresh: 0.95
+  crop_n_layers: 0
+  min_mask_region_area: 200
+
+filtering:
+  # Geometric priors to extract egg candidate masks from SAM proposals
+  min_egg_area: 2000                   # Minimum pixel area for an egg in 640x640
+  max_egg_area: 320000                 # Maximum pixel area (avoid whole background)
+  min_circularity: 0.30                # 4*pi*area / perimeter^2
+  min_aspect_ratio: 0.40               # minor_axis / major_axis
+
+outputs:
+  binary_masks_dir: "outputs/sam/binary_masks"
+  instance_masks_dir: "outputs/sam/instance_masks"
+  overlays_dir: "outputs/sam/overlays"
+  qc_gallery_dir: "outputs/sam/qc_gallery"
+  manifest_path: "outputs/sam/sam_manifest.csv"

@@ -1,0 +1,28 @@
+{
+  "random_seed": 42,
+  "target_dev_count": 88,
+  "target_eval_count": 22,
+  "actual_dev_count": 88,
+  "actual_eval_count": 22,
+  "actual_dev_ratio": 0.8,
+  "actual_eval_ratio": 0.2,
+  "total_images": 110,
+  "corrupted_images_excluded": 0,
+  "duplicate_groups_total": 109,
+  "duplicate_groups_in_dev": 87,
+  "duplicate_groups_in_eval": 22,
+  "folder_distribution": {
+    "development": {
+      "test/egg": 9,
+      "train/Unlabeled": 1,
+      "train/egg": 61,
+      "valid/egg": 17
+    },
+    "evaluation": {
+      "test/egg": 2,
+      "train/Unlabeled": 1,
+      "train/egg": 14,
+      "valid/egg": 5
+    }
+  }
+}

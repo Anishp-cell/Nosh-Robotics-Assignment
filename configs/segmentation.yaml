@@ -1,0 +1,46 @@
+# Classical Computer Vision Egg Segmentation Configuration (Task 2)
+# Leakage-aware design: Tuned ONLY on the development split
+
+preprocessing:
+  blur_method: "gaussian"              # "gaussian", "median", or "bilateral"
+  blur_ksize: [5, 5]
+  blur_sigma: 1.0
+
+color_analysis:
+  color_space: "lab"                   # "lab", "hsv", "gray", or "ycrcb"
+  channel: "l"                         # Channel to threshold, e.g. "l" in Lab, "s" or "v" in HSV
+  clahe:
+    enabled: true
+    clip_limit: 2.0
+    tile_grid_size: [8, 8]
+
+thresholding:
+  method: "otsu"                       # "otsu", "adaptive_gaussian", "adaptive_mean", "manual"
+  invert: false                        # Invert binary threshold output if egg is bright/dark
+  adaptive_block_size: 31
+  adaptive_c: 4
+  manual_threshold: 120
+
+morphology:
+  open_kernel_size: [5, 5]
+  open_iterations: 1
+  close_kernel_size: [7, 7]
+  close_iterations: 2
+  fill_holes: true
+
+component_filtering:
+  min_area: 2000                       # Filter out speckles and noise
+  max_area: 320000                     # Filter out full-image background floods
+  min_circularity: 0.25                # Eggs are roughly elliptical (4*pi*area / perimeter^2)
+  min_aspect_ratio: 0.35               # minor / major axis ratio
+  max_aspect_ratio: 2.80
+
+watershed:
+  enabled: false                       # Set to true for separating overlapping/touching eggs
+  distance_threshold_ratio: 0.4
+  min_distance_px: 25
+
+outputs:
+  masks_dir: "outputs/classical/masks"
+  overlays_dir: "outputs/classical/overlays"
+  experiments_dir: "outputs/classical/experiments"

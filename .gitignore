@@ -1,0 +1,69 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Build and Distribution
+build/
+dist/
+*.egg-info/
+*.egg
+
+# IDE & OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Checkpoints & Pretrained Models (Meta SAM weights)
+checkpoints/*
+!checkpoints/.gitkeep
+
+# Large Datasets & Video
+data/raw/*
+!data/raw/.gitkeep
+data/development/*
+!data/development/.gitkeep
+data/evaluation/*
+!data/evaluation/.gitkeep
+*.zip
+*.tar.gz
+*.mp4
+*.avi
+*.mov
+
+# Generated Outputs & Masks
+outputs/sam/*
+!outputs/sam/.gitkeep
+outputs/classical/*
+!outputs/classical/.gitkeep
+outputs/evaluation/*
+!outputs/evaluation/.gitkeep
+outputs/tracking/*
+!outputs/tracking/.gitkeep
+outputs/dataset_audit/*
+!outputs/dataset_audit/.gitkeep
+outputs/figures/*
+!outputs/figures/.gitkeep
+
+# Local Secrets
+.env
+*.secret

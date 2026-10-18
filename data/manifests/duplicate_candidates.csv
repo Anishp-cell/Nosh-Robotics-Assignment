@@ -1,0 +1,2 @@
+image_a,image_b,folder_a,folder_b,sha256_match,hamming_distance,is_exact_duplicate,is_near_duplicate
+not_damaged_78_jpg.rf.d3a6e8624d192abc58ff7df9d5781bb5.jpg,not_damaged_27_jpg.rf.9eabbf76d6ac2d4caccb38b11e0d28ad.jpg,test/egg,train/egg,False,4,False,True

@@ -1,0 +1,29 @@
+# Core Computer Vision & Numerical Computing
+numpy>=1.24.0
+opencv-python>=4.8.0
+scipy>=1.10.0
+scikit-image>=0.21.0
+
+# Data Analysis & Visualization
+pandas>=2.0.0
+matplotlib>=3.7.0
+pyyaml>=6.0
+tqdm>=4.65.0
+pillow>=10.0.0
+
+# Testing
+pytest>=7.0.0
+
+# Optional Perceptual Hash package (eggcv includes native OpenCV/NumPy perceptual hashing fallback)
+# imagehash>=4.3.1
+
+# Deep Learning (PyTorch & TorchVision)
+# Note: In the existing environment, PyTorch with CUDA is already installed:
+# torch>=2.0.0
+# torchvision>=0.15.0
+# For a fresh setup on Windows with CUDA:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+
+# Meta's Segment Anything Model (SAM)
+# Install official package directly from GitHub:
+# pip install git+https://github.com/facebookresearch/segment-anything.git
