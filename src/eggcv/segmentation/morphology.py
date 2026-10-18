@@ -32,7 +32,7 @@ def morphological_clean(
     Returns:
         np.ndarray: Cleaned binary mask (uint8 with 0 or 255)
     """
-    binary = (mask > 0).astype(np.uint8) * 255
+    binary = np.ascontiguousarray((mask > 0).astype(np.uint8) * 255)
 
     if open_iters > 0 and open_ksize > 1:
         kernel_open = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (open_ksize, open_ksize))
@@ -56,7 +56,7 @@ def fill_holes(mask: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: Binary mask with internal holes filled (uint8 with 0 or 255)
     """
-    binary = (mask > 0).astype(np.uint8) * 255
+    binary = np.ascontiguousarray((mask > 0).astype(np.uint8) * 255)
     h, w = binary.shape
 
     # Flood fill background from a padded border canvas
@@ -99,10 +99,10 @@ def filter_connected_components(
             - np.ndarray: Cleaned binary mask containing only valid components
             - List[Dict]: Metadata for each accepted component (area, centroid, bbox, circularity)
     """
-    binary = (mask > 0).astype(np.uint8) * 255
+    binary = np.ascontiguousarray((mask > 0).astype(np.uint8) * 255)
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    filtered_mask = np.zeros_like(binary)
+    filtered_mask = np.zeros(binary.shape[:2], dtype=np.uint8, order="C")
     accepted_components: List[Dict[str, Any]] = []
 
     for contour in contours:
@@ -162,7 +162,7 @@ def separate_touching_objects(
     Returns:
         np.ndarray: Mask with separated instances
     """
-    binary = (mask > 0).astype(np.uint8) * 255
+    binary = np.ascontiguousarray((mask > 0).astype(np.uint8) * 255)
     if not np.any(binary):
         return binary
 

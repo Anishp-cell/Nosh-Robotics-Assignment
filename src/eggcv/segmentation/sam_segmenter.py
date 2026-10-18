@@ -135,10 +135,11 @@ class SAMSegmenter(BaseSegmenter):
             if np.any(filtered):
                 composite_mask[filtered > 0] = 255
                 egg_instances.append({
+                    "mask": filtered,
                     "bbox": prop.get("bbox"),
                     "predicted_iou": float(prop.get("predicted_iou", 0.0)),
                     "stability_score": float(prop.get("stability_score", 0.0)),
-                    "area": area,
+                    "area": float(area),
                 })
 
         metadata = {
