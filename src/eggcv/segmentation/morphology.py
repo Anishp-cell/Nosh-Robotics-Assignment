@@ -48,8 +48,7 @@ def morphological_clean(
 def fill_holes(mask: np.ndarray) -> np.ndarray:
     """
     Fill internal holes (e.g. from specular glare/reflections) in binary foreground objects.
-    Uses border padding and flood fill from boundaries to distinguish outer background
-    from internal voids, even if foreground objects touch the image edge.
+    Uses flood fill from boundaries to distinguish outer background from internal voids.
 
     Args:
         mask: 2D binary mask array (uint8 or bool)
@@ -60,16 +59,14 @@ def fill_holes(mask: np.ndarray) -> np.ndarray:
     binary = np.ascontiguousarray((mask > 0).astype(np.uint8) * 255)
     h, w = binary.shape
 
-    # Pad border with 0s to guarantee (0, 0) is background
-    padded = cv2.copyMakeBorder(binary, 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=0)
+    # Pad by 1 pixel of zeros on all sides so background connects to (0, 0) even if mask touches borders
+    padded = np.pad(binary, pad_width=1, mode="constant", constant_values=0)
     flood_canvas = np.zeros((h + 4, w + 4), np.uint8)
     im_floodfill = padded.copy()
     cv2.floodFill(im_floodfill, flood_canvas, (0, 0), 255)
 
-    # Invert floodfilled image to isolate internal holes
+    # Invert floodfilled image to obtain internal holes
     im_floodfill_inv = cv2.bitwise_not(im_floodfill)
-
-    # Crop out the padding
     holes = im_floodfill_inv[1:-1, 1:-1]
 
     # Combine original mask with internal holes

@@ -1,47 +1,36 @@
-# Classical Computer Vision Egg Segmentation Configuration (Task 2)
-# Leakage-aware design: Tuned ONLY on the development split
-
 preprocessing:
-  blur_method: "gaussian"              # "gaussian", "median", or "bilateral"
-  blur_ksize: [5, 5]
-  blur_sigma: 1.0
-
+  blur_method: gaussian
+  blur_ksize:
+  - 7
+  - 7
+  blur_sigma: 1.5
 color_analysis:
-  color_space: "gray"                  # "gray", "lab", "hsv", or "ycrcb"
-  channel: "l"
+  color_space: gray
   clahe:
     enabled: false
-    clip_limit: 2.0
-    tile_grid_size: [8, 8]
-
 thresholding:
-  method: "otsu"                       # "otsu", "adaptive_gaussian", "adaptive_mean", "manual"
-  invert: false                        # Invert binary threshold output if egg is bright/dark
-  adaptive_block_size: 31
-  adaptive_c: 4
-  manual_threshold: 120
-
+  method: otsu
+  invert: false
 morphology:
-  open_kernel_size: [5, 5]
+  open_kernel_size:
+  - 7
+  - 7
   open_iterations: 1
-  close_kernel_size: [7, 7]
-  close_iterations: 2
+  close_kernel_size:
+  - 9
+  - 9
+  close_iterations: 1
   fill_holes: true
-
 component_filtering:
   enabled: true
-  min_area: 300                        # Filter out speckles and noise without dropping small eggs
-  max_area: 405000                     # Avoid dropping full-tray egg clusters
-  min_circularity: 0.01                # Relaxed to preserve multi-egg chain contours
-  min_aspect_ratio: 0.05
-  max_aspect_ratio: 20.0
-
+  min_area: 300
+  max_area: 405000
+  min_circularity: 0.0
+  min_aspect_ratio: 0.0
+  max_aspect_ratio: 100.0
 watershed:
-  enabled: false                       # Set to true for instance separation in tracking
-  distance_threshold_ratio: 0.55
-  min_distance_px: 20
-
+  enabled: false
 outputs:
-  masks_dir: "outputs/classical/masks"
-  overlays_dir: "outputs/classical/overlays"
-  experiments_dir: "outputs/classical/experiments"
+  masks_dir: outputs/classical/masks
+  overlays_dir: outputs/classical/overlays
+  experiments_dir: outputs/classical/experiments
