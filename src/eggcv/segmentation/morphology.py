@@ -81,12 +81,18 @@ def filter_connected_components(
     min_circularity: float = 0.20,
     min_aspect_ratio: float = 0.35,
     max_aspect_ratio: float = 2.85,
+    min_solidity: float = 0.0,
+    max_frame_coverage: float = 1.0,
+    min_mean_intensity: float = 0.0,
+    intensity_image: Optional[np.ndarray] = None,
+    exclude_regions: Optional[List[Tuple[float, float, float, float]]] = None,
 ) -> Tuple[np.ndarray, List[Dict[str, Any]]]:
     """
-    Filter binary components using egg-like geometric priors (area, circularity, aspect ratio).
+    Filter binary components using egg-like geometric priors (area, circularity, aspect ratio, solidity).
 
     Circularity is defined as: 4 * pi * area / (perimeter^2)
     For a perfect circle, circularity = 1.0; for typical eggs, it is ~0.7 to 0.9.
+    Solidity is defined as: area / convex_hull_area (smooth convex eggs have solidity >= 0.85).
 
     Args:
         mask: 2D binary mask
@@ -95,11 +101,16 @@ def filter_connected_components(
         min_circularity: Minimum isoperimetric quotient
         min_aspect_ratio: Minimum ratio of min(width, height) / max(width, height)
         max_aspect_ratio: Maximum aspect ratio width/height
+        min_solidity: Minimum ratio of contour area to convex hull area
+        max_frame_coverage: Maximum fraction of total frame area a single component can occupy
+        min_mean_intensity: Minimum mean grayscale intensity within contour (rejects dark shadows)
+        intensity_image: Grayscale image (uint8) used to evaluate min_mean_intensity
+        exclude_regions: Normalized bounding boxes [x1, y1, x2, y2] to ignore (e.g. static UI logos)
 
     Returns:
         Tuple:
             - np.ndarray: Cleaned binary mask containing only valid components
-            - List[Dict]: Metadata for each accepted component (area, centroid, bbox, circularity)
+            - List[Dict]: Metadata for each accepted component (area, centroid, bbox, circularity, solidity)
     """
     binary = np.ascontiguousarray((mask > 0).astype(np.uint8) * 255)
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -107,12 +118,19 @@ def filter_connected_components(
     filtered_mask = np.zeros(binary.shape[:2], dtype=np.uint8, order="C")
     accepted_components: List[Dict[str, Any]] = []
 
+    h_frame, w_frame = binary.shape[:2]
+    total_frame_area = float(h_frame * w_frame)
+
     for contour in contours:
         area = cv2.contourArea(contour)
         if area < min_area:
             continue
         if max_area is not None and area > max_area:
             continue
+
+        if max_frame_coverage < 1.0 and total_frame_area > 0:
+            if (area / total_frame_area) > max_frame_coverage:
+                continue
 
         perimeter = cv2.arcLength(contour, True)
         if perimeter <= 0:
@@ -128,10 +146,37 @@ def filter_connected_components(
         if aspect_ratio < min_aspect_ratio or aspect_ratio > max_aspect_ratio:
             continue
 
+        # Solidity check (egg is smoothly convex; text letters/complex shapes have low solidity)
+        hull = cv2.convexHull(contour)
+        hull_area = cv2.contourArea(hull)
+        solidity = float(area) / hull_area if hull_area > 0 else 0.0
+        if solidity < min_solidity:
+            continue
+
         # Compute centroid
         moments = cv2.moments(contour)
         cx = int(moments["m10"] / moments["m00"]) if moments["m00"] != 0 else x + w // 2
         cy = int(moments["m01"] / moments["m00"]) if moments["m00"] != 0 else y + h // 2
+
+        # Check spatial exclusion zones
+        if exclude_regions:
+            norm_cx = cx / w_frame if w_frame > 0 else 0.0
+            norm_cy = cy / h_frame if h_frame > 0 else 0.0
+            in_excluded = any(
+                (rx1 <= norm_cx <= rx2 and ry1 <= norm_cy <= ry2)
+                for (rx1, ry1, rx2, ry2) in exclude_regions
+            )
+            if in_excluded:
+                continue
+
+        # Intensity check
+        mean_intensity = 0.0
+        if min_mean_intensity > 0.0 and intensity_image is not None:
+            mask_cnt = np.zeros((h_frame, w_frame), dtype=np.uint8)
+            cv2.drawContours(mask_cnt, [contour], -1, 255, -1)
+            mean_intensity = float(cv2.mean(intensity_image, mask=mask_cnt)[0])
+            if mean_intensity < min_mean_intensity:
+                continue
 
         # Draw accepted contour onto filtered mask
         cv2.drawContours(filtered_mask, [contour], -1, 255, -1)
@@ -140,9 +185,11 @@ def filter_connected_components(
             "area": float(area),
             "perimeter": float(perimeter),
             "circularity": float(circularity),
+            "solidity": float(solidity),
             "bbox": (int(x), int(y), int(w), int(h)),
             "centroid": (cx, cy),
             "aspect_ratio": float(aspect_ratio),
+            "mean_intensity": float(mean_intensity),
         })
 
     return filtered_mask, accepted_components

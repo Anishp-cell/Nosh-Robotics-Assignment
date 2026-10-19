@@ -1,0 +1,52 @@
+# Video-Specific Egg Segmentation Configuration (Task 4)
+# Tuned to isolate physical eggs on the table while rejecting:
+#   - Upper human body & checkered shirt
+#   - On-screen typography and arrows
+#   - Bottom-right TV/YouTube channel branding watermark
+#   - Specular glare and shadow false-positives
+#   - Full-frame explanation slides
+
+preprocessing:
+  blur_method: gaussian
+  blur_ksize:
+  - 5
+  - 5
+  blur_sigma: 1.0
+
+color_analysis:
+  color_space: gray
+  clahe:
+    enabled: false
+
+thresholding:
+  method: otsu
+  invert: false
+
+morphology:
+  open_kernel_size:
+  - 3
+  - 3
+  open_iterations: 1
+  close_kernel_size:
+  - 3
+  - 3
+  close_iterations: 1
+  fill_holes: true
+
+watershed:
+  enabled: false
+
+component_filtering:
+  enabled: true
+  min_area: 2200
+  max_area: 18000
+  min_circularity: 0.65
+  min_aspect_ratio: 0.60
+  max_aspect_ratio: 1.70
+  min_solidity: 0.85
+  max_frame_coverage: 0.15
+  min_mean_intensity: 155.0
+  exclude_regions:
+  - [0.0, 0.0, 1.0, 0.35]      # Upper 35%: demonstrator clothing / body
+  - [0.0, 0.87, 1.0, 1.0]      # Bottom 13%: video progress bar / table edge
+  - [0.80, 0.80, 1.0, 1.0]     # Bottom-right corner: channel watermark logo

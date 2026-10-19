@@ -8,7 +8,7 @@ video:
 
 detection:
   detector_type: "classical"           # Uses tuned eggcv classical segmenter
-  config_path: "configs/segmentation.yaml"
+  config_path: "configs/video_segmentation.yaml"
   confidence_threshold: 0.5
 
 tracker:

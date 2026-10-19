@@ -86,6 +86,8 @@ class ClassicalEggSegmenter(BaseSegmenter):
 
         # 6. Connected Component Geometric Filtering
         filter_enabled = self.filter_cfg.get("enabled", True)
+        gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if image.ndim == 3 else image
+
         if filter_enabled:
             final_mask, components = filter_connected_components(
                 cleaned_mask,
@@ -94,9 +96,13 @@ class ClassicalEggSegmenter(BaseSegmenter):
                 min_circularity=float(self.filter_cfg.get("min_circularity", 0.0)),
                 min_aspect_ratio=float(self.filter_cfg.get("min_aspect_ratio", 0.0)),
                 max_aspect_ratio=float(self.filter_cfg.get("max_aspect_ratio", 100.0)),
+                min_solidity=float(self.filter_cfg.get("min_solidity", 0.0)),
+                max_frame_coverage=float(self.filter_cfg.get("max_frame_coverage", 1.0)),
+                min_mean_intensity=float(self.filter_cfg.get("min_mean_intensity", 0.0)),
+                intensity_image=gray_img,
+                exclude_regions=self.filter_cfg.get("exclude_regions", None),
             )
         else:
-            final_mask = cleaned_mask
             final_mask, components = filter_connected_components(
                 cleaned_mask,
                 min_area=0.0,
@@ -104,6 +110,11 @@ class ClassicalEggSegmenter(BaseSegmenter):
                 min_circularity=0.0,
                 min_aspect_ratio=0.0,
                 max_aspect_ratio=100.0,
+                min_solidity=0.0,
+                max_frame_coverage=1.0,
+                min_mean_intensity=0.0,
+                intensity_image=None,
+                exclude_regions=None,
             )
 
         metadata = {

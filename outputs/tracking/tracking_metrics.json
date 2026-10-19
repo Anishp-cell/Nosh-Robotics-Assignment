@@ -9,39 +9,36 @@
     "duration_seconds": 60.0
   },
   "tracking_results": {
-    "total_confirmed_tracks": 51,
-    "total_trajectory_observations": 5204,
+    "total_confirmed_tracks": 7,
+    "total_trajectory_observations": 772,
     "detections_per_frame": {
-      "mean": 3.62,
+      "mean": 1.54,
       "min": 1,
-      "max": 9,
-      "std": 2.01
+      "max": 2,
+      "std": 0.5
     },
     "track_lifespan_frames": {
-      "mean": 102.0,
-      "median": 50.0,
-      "min": 1,
-      "max": 1438
+      "mean": 110.3,
+      "median": 104.0,
+      "min": 24,
+      "max": 186
     },
-    "top_10_longest_tracks": {
-      "Track 1": 1438,
-      "Track 65": 430,
-      "Track 6": 347,
-      "Track 3": 285,
-      "Track 4": 273,
-      "Track 2": 209,
-      "Track 49": 198,
-      "Track 5": 173,
-      "Track 52": 135,
-      "Track 53": 129
+    "all_tracks_lifespan": {
+      "Track 1": 177,
+      "Track 2": 82,
+      "Track 3": 104,
+      "Track 4": 24,
+      "Track 5": 81,
+      "Track 6": 186,
+      "Track 7": 118
     }
   },
   "pipeline_performance": {
-    "processing_speed_fps": 276.0,
-    "total_processing_seconds": 5.2,
+    "processing_speed_fps": 230.0,
     "hardware": "CPU (single-core OpenCV)"
   },
   "tracker_config": {
+    "detection_config": "configs/video_segmentation.yaml",
     "association_method": "centroid_euclidean_distance + Hungarian assignment",
     "max_distance_pixels": 75.0,
     "max_consecutive_lost_frames": 20,
@@ -49,7 +46,11 @@
   },
   "outputs": {
     "annotated_video": "outputs/tracking/annotated_egg_video.mp4",
-    "annotated_video_size_mb": 10.7,
-    "trajectory_csv": "outputs/tracking/tracking_trajectories.csv"
+    "annotated_video_size_mb": 6.4,
+    "trajectory_csv": "outputs/tracking/tracking_trajectories.csv",
+    "qa_gallery_baseline_part1": "outputs/tracking/qa_gallery/detection_grid_baseline_part1.jpg",
+    "qa_gallery_baseline_part2": "outputs/tracking/qa_gallery/detection_grid_baseline_part2.jpg",
+    "qa_gallery_optimized_part1": "outputs/tracking/qa_gallery/detection_grid_optimized_part1.jpg",
+    "qa_gallery_optimized_part2": "outputs/tracking/qa_gallery/detection_grid_optimized_part2.jpg"
   }
 }
