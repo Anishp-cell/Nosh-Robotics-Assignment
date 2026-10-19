@@ -7,10 +7,10 @@ preprocessing:
   blur_sigma: 1.0
 
 color_analysis:
-  color_space: "lab"                   # "lab", "hsv", "gray", or "ycrcb"
-  channel: "l"                         # Channel to threshold, e.g. "l" in Lab, "s" or "v" in HSV
+  color_space: "gray"                  # "gray", "lab", "hsv", or "ycrcb"
+  channel: "l"
   clahe:
-    enabled: true
+    enabled: false
     clip_limit: 2.0
     tile_grid_size: [8, 8]
 
@@ -29,16 +29,17 @@ morphology:
   fill_holes: true
 
 component_filtering:
-  min_area: 2000                       # Filter out speckles and noise
-  max_area: 320000                     # Filter out full-image background floods
-  min_circularity: 0.25                # Eggs are roughly elliptical (4*pi*area / perimeter^2)
-  min_aspect_ratio: 0.35               # minor / major axis ratio
-  max_aspect_ratio: 2.80
+  enabled: true
+  min_area: 300                        # Filter out speckles and noise without dropping small eggs
+  max_area: 405000                     # Avoid dropping full-tray egg clusters
+  min_circularity: 0.01                # Relaxed to preserve multi-egg chain contours
+  min_aspect_ratio: 0.05
+  max_aspect_ratio: 20.0
 
 watershed:
-  enabled: false                       # Set to true for separating overlapping/touching eggs
-  distance_threshold_ratio: 0.4
-  min_distance_px: 25
+  enabled: false                       # Set to true for instance separation in tracking
+  distance_threshold_ratio: 0.55
+  min_distance_px: 20
 
 outputs:
   masks_dir: "outputs/classical/masks"

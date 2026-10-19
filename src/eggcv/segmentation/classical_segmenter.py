@@ -74,7 +74,10 @@ class ClassicalEggSegmenter(BaseSegmenter):
         raw_mask = self._apply_threshold(channel)
 
         # 4. Morphological Cleaning & Hole Filling
-        cleaned_mask = self._apply_morphology(raw_mask)
+        if self.morph_cfg.get("enabled", True):
+            cleaned_mask = self._apply_morphology(raw_mask)
+        else:
+            cleaned_mask = raw_mask
 
         # 5. Optional Watershed for Touching Objects
         if self.watershed_cfg.get("enabled", False):
@@ -85,14 +88,19 @@ class ClassicalEggSegmenter(BaseSegmenter):
             )
 
         # 6. Connected Component Geometric Filtering
-        final_mask, components = filter_connected_components(
-            cleaned_mask,
-            min_area=float(self.filter_cfg.get("min_area", 2000.0)),
-            max_area=float(self.filter_cfg.get("max_area", 320000.0)) if self.filter_cfg.get("max_area") else None,
-            min_circularity=float(self.filter_cfg.get("min_circularity", 0.25)),
-            min_aspect_ratio=float(self.filter_cfg.get("min_aspect_ratio", 0.35)),
-            max_aspect_ratio=float(self.filter_cfg.get("max_aspect_ratio", 2.80)),
-        )
+        if self.filter_cfg.get("enabled", True):
+            final_mask, components = filter_connected_components(
+                cleaned_mask,
+                min_area=float(self.filter_cfg.get("min_area", 2000.0)),
+                max_area=float(self.filter_cfg.get("max_area", 320000.0)) if self.filter_cfg.get("max_area") else None,
+                min_circularity=float(self.filter_cfg.get("min_circularity", 0.25)),
+                min_aspect_ratio=float(self.filter_cfg.get("min_aspect_ratio", 0.35)),
+                max_aspect_ratio=float(self.filter_cfg.get("max_aspect_ratio", 2.80)),
+            )
+        else:
+            final_mask = cleaned_mask
+            contours, _ = cv2.findContours(final_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            components = [{"area": float(cv2.contourArea(c))} for c in contours]
 
         metadata = {
             "num_detected_eggs": len(components),
@@ -103,6 +111,8 @@ class ClassicalEggSegmenter(BaseSegmenter):
         return final_mask, metadata
 
     def _apply_preprocessing(self, image: np.ndarray) -> np.ndarray:
+        if not self.preprocessing_cfg.get("enabled", True):
+            return image
         blur_method = self.preprocessing_cfg.get("blur_method", "gaussian")
         ksize = tuple(self.preprocessing_cfg.get("blur_ksize", [5, 5]))
         sigma = float(self.preprocessing_cfg.get("blur_sigma", 1.0))
