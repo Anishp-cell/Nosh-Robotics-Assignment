@@ -203,7 +203,15 @@ This codebase was developed with the assistance of an AI coding agent (Google De
 
 ---
 
-## 10. Deliverable Links & Placeholders
-- **Assigned Video URL**: [https://www.youtube.com/watch?v=Y4JyV94y2_A](https://www.youtube.com/watch?v=Y4JyV94y2_A)
-- **Final Annotated Video (Google Drive Public Link)**: `[PLACEHOLDER: Insert public link after video upload]`
-- **Technical Report**: [report/README.md](report/README.md)
+## 10. Deliverables & Artifacts
+- **Technical Report (PDF)**: [report/Nosh_Robotics_CV_Intern_Assignment_Report.pdf](report/Nosh_Robotics_CV_Intern_Assignment_Report.pdf)
+- **Technical Report (Markdown)**: [report/README.md](report/README.md)
+- **Assigned YouTube Video**: [https://www.youtube.com/watch?v=Y4JyV94y2_A](https://www.youtube.com/watch?v=Y4JyV94y2_A)
+- **Annotated Video Deliverable (Google Drive Public Link)**:
+  `https://drive.google.com/file/d/REPLACE_WITH_YOUR_PUBLIC_DRIVE_LINK/view?usp=sharing`
+- **Experiment Log (CSV)**: [experiments/experiment_log.csv](experiments/experiment_log.csv)
+- **Evaluation Benchmark**:
+  - Evaluation Set Mean IoU: **0.3943**
+  - Evaluation Set Mean Dice: **0.5250**
+  - Evaluation Set Recall: **0.6587**
+  - Real-time Video Tracking Speed: **130+ FPS**
