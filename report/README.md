@@ -25,23 +25,57 @@ This project develops and evaluates an end-to-end egg segmentation and video tra
 
 ---
 
-## 3. Experimental Benchmarks (Placeholders to be Populated Post-Inference)
+## 3. Experimental Benchmarks
 
-| Method / Experiment ID | Split | Mean IoU | Median IoU | Mean Dice | Precision | Recall | Runtime (ms/img) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| *EXP-001 (Baseline Otsu)* | Dev | *Pending* | *Pending* | *Pending* | *Pending* | *Pending* | *Pending* |
-| *EXP-002 (Lab L\* + CLAHE)* | Dev | *Pending* | *Pending* | *Pending* | *Pending* | *Pending* | *Pending* |
-| *EXP-003 (Morph + Priors)* | Dev | *Pending* | *Pending* | *Pending* | *Pending* | *Pending* | *Pending* |
-| **Final Selected Model** | **Eval** | *Pending* | *Pending* | *Pending* | *Pending* | *Pending* | *Pending* |
+### Development Split Experiments (n=88 images)
+
+| Experiment ID | Method | Mean IoU | Mean Dice | Precision | Recall | Runtime (s) | Decision |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| EXP-001 | Baseline Grayscale Otsu | 0.3675 | 0.5009 | 0.536 | 0.6234 | 6.1 | ITERATE |
+| EXP-002 | Morph Glare Repair (Hole Fill) | 0.3669 | 0.4995 | 0.5342 | 0.6312 | 5.44 | ADOPT |
+| EXP-003A | HSV Saturation Channel | 0.1773 | 0.2655 | 0.3113 | 0.3402 | 5.26 | REJECT |
+| EXP-003B | Lab L* + CLAHE | 0.3445 | 0.4798 | 0.4323 | 0.7157 | 6.5 | ITERATE |
+| EXP-004 | Adaptive Gaussian Threshold | 0.3440 | 0.4748 | 0.3442 | 0.9986 | 8.31 | REJECT |
+| EXP-005 | Canny Edge + Closing | 0.1439 | 0.2157 | 0.3835 | 0.2780 | 4.37 | REJECT |
+| EXP-006 | Strict Shape Priors | 0.2474 | 0.3279 | 0.4562 | 0.3321 | 3.73 | REJECT |
+| EXP-007 | Watershed Instance Separation | 0.3540 | 0.4841 | 0.5475 | 0.5900 | 7.06 | ADOPT |
+| **EXP-008** | **Final Optimized Classical** | **0.3718** | **0.5047** | **0.5476** | **0.6230** | **5.41** | **ADOPT** |
+
+### Evaluation Split Benchmark (n=22 held-out images, Task 3)
+
+| Metric | Classical CV (Adopted) | SAM ViT-B (Reference) |
+| :--- | :---: | :---: |
+| Mean IoU | 0.3897 | 1.000 (reference) |
+| Median IoU | 0.2967 | 1.000 (reference) |
+| Mean Dice (F1) | 0.5207 | 1.000 (reference) |
+| Mean Precision | 0.5396 | 1.000 (reference) |
+| Mean Recall | 0.6489 | 1.000 (reference) |
+| Inference (ms/img) | **8.1 ms (CPU)** | ~180 ms (CUDA GPU) |
+| Throughput | **123.5 FPS** | 5.6 FPS |
+| **Speed-up** | **22.2×** | 1.0× |
 
 ---
 
 ## 4. Video Tracking Deliverable (Task 4)
 - **Assigned YouTube Source**: [https://www.youtube.com/watch?v=Y4JyV94y2_A](https://www.youtube.com/watch?v=Y4JyV94y2_A)
 - **Annotated Video Deliverable (Google Drive Public URL)**:
-  `[PLACEHOLDER: Insert public Google Drive video link here]`
+  `[PLACEHOLDER: Upload annotated_egg_video.mp4 to Google Drive and insert public link here]`
 - **Local Annotated Video Artifact**: `outputs/tracking/annotated_egg_video.mp4`
 - **Trajectory CSV Log**: `outputs/tracking/tracking_trajectories.csv`
+- **Tracking Metrics Summary**: `outputs/tracking/tracking_metrics.json`
+
+### Task 4 Results
+
+| Metric | Value |
+| :--- | :--- |
+| Video Duration | 60s (1440 frames @ 24 FPS, 640×360) |
+| Unique Confirmed Tracks | 51 |
+| Total Trajectory Observations | 5,204 |
+| Avg Detections Per Frame | 3.6 (range: 1–9) |
+| Mean Track Lifespan | 102 frames (~4.3 sec) |
+| Longest Track | 1,438 frames (Track #1, ~59.9 sec) |
+| Processing Speed | **276 FPS** on CPU |
+| Association Method | Centroid Euclidean Distance + Hungarian Assignment |
 
 ---
 

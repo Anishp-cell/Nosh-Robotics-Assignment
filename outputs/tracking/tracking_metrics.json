@@ -1,0 +1,55 @@
+{
+  "task": "Task 4 \u2014 Video Egg Tracking (Multi-Object Persistent ID Tracking)",
+  "input_video": {
+    "path": "data/raw/video/egg_video.mp4",
+    "youtube_url": "https://www.youtube.com/watch?v=Y4JyV94y2_A",
+    "total_frames": 1440,
+    "fps": 24.0,
+    "resolution": "640x360",
+    "duration_seconds": 60.0
+  },
+  "tracking_results": {
+    "total_confirmed_tracks": 51,
+    "total_trajectory_observations": 5204,
+    "detections_per_frame": {
+      "mean": 3.62,
+      "min": 1,
+      "max": 9,
+      "std": 2.01
+    },
+    "track_lifespan_frames": {
+      "mean": 102.0,
+      "median": 50.0,
+      "min": 1,
+      "max": 1438
+    },
+    "top_10_longest_tracks": {
+      "Track 1": 1438,
+      "Track 65": 430,
+      "Track 6": 347,
+      "Track 3": 285,
+      "Track 4": 273,
+      "Track 2": 209,
+      "Track 49": 198,
+      "Track 5": 173,
+      "Track 52": 135,
+      "Track 53": 129
+    }
+  },
+  "pipeline_performance": {
+    "processing_speed_fps": 276.0,
+    "total_processing_seconds": 5.2,
+    "hardware": "CPU (single-core OpenCV)"
+  },
+  "tracker_config": {
+    "association_method": "centroid_euclidean_distance + Hungarian assignment",
+    "max_distance_pixels": 75.0,
+    "max_consecutive_lost_frames": 20,
+    "min_hits_to_confirm": 3
+  },
+  "outputs": {
+    "annotated_video": "outputs/tracking/annotated_egg_video.mp4",
+    "annotated_video_size_mb": 10.7,
+    "trajectory_csv": "outputs/tracking/tracking_trajectories.csv"
+  }
+}
